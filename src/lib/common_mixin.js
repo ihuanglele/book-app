@@ -3,8 +3,13 @@ import axios from 'axios'
 
 const baseURL = 'http://book.me'
 
+const img = require('@/assets/book.png')
+
 Vue.mixin({
   methods: {
+    getDefaultImg () {
+      return img
+    },
 
     /**
      * get 请求
@@ -17,7 +22,7 @@ Vue.mixin({
         url: path,
         params: data
       }
-      return await this.http_http(config, cb)
+      return this.http_http(config, cb)
     },
 
     /**
@@ -32,7 +37,7 @@ Vue.mixin({
         url: path,
         data: data
       }
-      return await this.http_http(config, cb)
+      return this.http_http(config, cb)
     },
 
     async http_http (config, cb) {

@@ -23,7 +23,7 @@ export default {
   methods: {
     search () {
       this.$router.push({
-        path: 'Search'
+        path: 'search'
       })
     }
   }

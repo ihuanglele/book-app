@@ -11,6 +11,7 @@ import Toast from 'muse-ui-toast'
 
 Vue.use(MuseUI)
 Vue.use(Toast)
+require('./lib/common_mixin')
 
 Vue.config.productionTip = false
 
