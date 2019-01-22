@@ -7,8 +7,10 @@ import router from './router'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import './assets/common.css'
+import Toast from 'muse-ui-toast'
 
 Vue.use(MuseUI)
+Vue.use(Toast)
 
 Vue.config.productionTip = false
 
