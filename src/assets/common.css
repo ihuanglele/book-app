@@ -11,3 +11,8 @@ body,html{
   flex-direction: column;
   height: 100%;
 }
+
+.app-content {
+  background-color: #fafafa;
+  color: rgba(0, 0, 0, .87);
+}
