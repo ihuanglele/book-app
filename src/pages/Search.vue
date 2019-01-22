@@ -36,12 +36,35 @@
     width: 90%;
     margin: 10px auto 5px;
     display: flex;
-
+    animation: inputBlur 200ms ease-in-out;
   }
 
   .active {
     width: 80%;
     margin: 20px auto;
+    animation: inputFocus 200ms ease-in-out;
+  }
+
+  @keyframes inputFocus {
+    from {
+      width: 90%;
+      margin: 10px auto 5px;
+    }
+    to {
+      width: 80%;
+      margin: 20px auto;
+    }
+  }
+
+  @keyframes inputBlur {
+    from {
+      width: 80%;
+      margin: 20px auto;
+    }
+    to {
+      width: 90%;
+      margin: 10px auto 5px;
+    }
   }
 
   .search-input {
