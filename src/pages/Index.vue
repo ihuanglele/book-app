@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    search() {
+    search () {
       this.$router.push({
         path: 'Search'
       })

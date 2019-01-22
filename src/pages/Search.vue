@@ -13,22 +13,22 @@
 </template>
 
 <script>
-  export default {
-    name: 'Search',
-    data() {
-      return {
-        form: {
-          input: ''
-        },
-        searchFocus: true
-      }
-    },
-    methods: {
-      search() {
+export default {
+  name: 'Search',
+  data () {
+    return {
+      form: {
+        input: ''
+      },
+      searchFocus: true
+    }
+  },
+  methods: {
+    search () {
 
-      }
     }
   }
+}
 </script>
 
 <style scoped>
