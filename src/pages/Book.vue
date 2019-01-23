@@ -115,7 +115,7 @@
     chapters () {
       let arr = this.book.chapters
       if (!this.sortAsc) {
-        arr = this.book.chapters.reverse()
+        arr = arr.reverse()
       }
       return arr
     }
