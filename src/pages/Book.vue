@@ -105,8 +105,8 @@
   watch: {
     '$route.params': {
       deep: true,
-      handler: (params) => {
-        this.link = params
+      handler: (p) => {
+        this.link = this.$route.params
         this.getCat()
       }
     }
