@@ -7,8 +7,25 @@ const img = require('@/assets/book.png')
 
 Vue.mixin({
   methods: {
+    /**
+     * 获取默认图片
+     * @returns {*}
+     */
     getDefaultImg () {
       return img
+    },
+
+    search () {
+      this.$router.push({
+        name: 'search'
+      })
+    },
+
+    /**
+     * 返回上一页
+     */
+    back () {
+      this.$router.back()
     },
 
     /**

@@ -11,16 +11,13 @@
                        v-model="form.input"></mu-text-field>
       </mu-form>
     </div>
-
     <div class="main">
-      <div class="searching" v-show="isSearching">
-        <mu-icon size="36" :value="loadingIcon" color="green"></mu-icon>
-      </div>
+      <Loading v-show="isSearching"></Loading>
       <div v-show="!isSearching">
         <mu-grid-list :cell-height="240">
-          <mu-grid-tile @click="viewBook(item.link)" class="book-item" v-for="(item, index) in dataList" :key="index">
-            <img :src="item.img ? item.img : getDefaultImg()" >
-            <span slot="title">{{item.title}}</span>
+          <mu-grid-tile @click="viewBook(item.type,item.bookId)" class="book-item" v-for="(item, index) in dataList" :key="index">
+            <img :src="item.cover ? item.cover : getDefaultImg()" >
+            <span slot="title">{{item.name}}</span>
             <span slot="subTitle">作者 <b>{{item.author}}</b></span>
             <mu-button slot="action" icon>
               <!--<mu-icon value="star_border"></mu-icon>-->
@@ -34,8 +31,11 @@
 
 <script>
 
-export default {
+  import Loading from '../components/Loading'
+
+  export default {
   name: 'Search',
+  components: {Loading},
   data () {
     return {
       form: {
@@ -47,8 +47,7 @@ export default {
       },
       searchFocus: true,
       dataList: [],
-      isSearching: false,
-      loadingIcon: 'border_bottom'
+      isSearching: false
     }
   },
   methods: {
@@ -68,11 +67,10 @@ export default {
         }
       }
     },
-    viewBook (params) {
-      console.log(params)
+    viewBook (type, id) {
       this.$router.push({
-        path: 'Book',
-        params: params
+        name: 'book',
+        params: {type, id}
       })
     }
   },
@@ -82,19 +80,6 @@ export default {
         this.search()
       }
     }
-  },
-  created () {
-    let t = 0
-    const arr = ['border_bottom', 'border_left', 'border_top', 'border_right', 'border_inner', 'border_outer']
-    setInterval(() => {
-      t++
-      if (t === arr.length) {
-        t = 0
-      }
-      this.loadingIcon = arr[t]
-    }, 1000)
-
-    console.log(this.$img)
   }
 }
 </script>

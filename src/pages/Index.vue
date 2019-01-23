@@ -21,11 +21,7 @@ export default {
     }
   },
   methods: {
-    search () {
-      this.$router.push({
-        path: 'search'
-      })
-    }
+
   }
 }
 </script>
