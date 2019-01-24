@@ -110,7 +110,7 @@ export default {
     _initFunc (to, from) {
       this.getArticle(to.params)
     },
-    showTopbar(){
+    showTopbar () {
       console.log('ok')
       this.topbarActive = !this.topbarActive
     },
