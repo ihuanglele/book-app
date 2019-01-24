@@ -16,7 +16,12 @@
       <div v-show="!isSearching">
         <mu-grid-list :cell-height="240">
           <mu-grid-tile @click="viewBook(item.type,item.bookId)" class="book-item" v-for="(item, index) in dataList" :key="index">
-            <img :src="item.cover ? item.cover : getDefaultImg()" >
+            <!--<img :src="item.cover ? item.cover : getDefaultImg()" >-->
+            <book-img
+              width="100%" height="100%"
+              :img="item.cover"
+              :book-name="item.name"
+              :author="item.author" />
             <span slot="title">{{item.name}}</span>
             <span slot="subTitle">作者 <b>{{item.author}}</b></span>
             <mu-button slot="action" icon>
@@ -31,11 +36,12 @@
 
 <script>
 
-import Loading from '../components/Loading'
+  import Loading from '../components/Loading'
+  import BookImg from '../components/BookImg'
 
-export default {
+  export default {
   name: 'Search',
-  components: {Loading},
+  components: {BookImg, Loading},
   data () {
     return {
       form: {

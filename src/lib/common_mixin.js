@@ -109,5 +109,12 @@ Vue.mixin({
         this.$toast.error('网络错误')
       }
     }
+  },
+  watch: {
+    '$route' (to, from) {
+      if (typeof this._initFunc === 'function') {
+        this._initFunc(to, from)
+      }
+    }
   }
 })

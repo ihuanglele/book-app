@@ -1,6 +1,6 @@
 <template>
   <div class="app-content">
-    <mu-appbar style="width: 100%;" color="primary">
+    <mu-appbar style="width: 100%;position: fixed;" color="primary">
       <mu-button @click="back" icon slot="left">
         <mu-icon value="navigate_before"></mu-icon>
       </mu-button>
@@ -9,8 +9,8 @@
         <mu-icon value="search"></mu-icon>
       </mu-button>
     </mu-appbar>
-    <Loading v-if="!init"></Loading>
-    <div v-else style="padding: 15px 10px">
+    <Loading style="margin-top: 80px;" v-if="!init"></Loading>
+    <div v-else style="padding: 15px 10px;margin-top: 56px;">
       <div class="card">
         <div class="sub-title">
           <h3>基本信息</h3>
@@ -50,9 +50,9 @@
 </template>
 
 <script>
-import Loading from '../components/Loading'
+  import Loading from '../components/Loading'
 
-export default {
+  export default {
   name: 'Book',
   components: {Loading},
   data () {
@@ -74,6 +74,9 @@ export default {
     }
   },
   methods: {
+    _initFunc (to) {
+      console.log(to)
+    },
     async getCat () {
       const ret = await this.http_get('index/cat', this.link)
       if (ret.code !== 200) {
@@ -101,15 +104,6 @@ export default {
     }
     this.link = this.$route.params
     this.getCat()
-  },
-  watch: {
-    '$route.params': {
-      deep: true,
-      handler: (p) => {
-        this.link = this.$route.params
-        this.getCat()
-      }
-    }
   },
   computed: {
     chapters () {

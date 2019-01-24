@@ -13,7 +13,12 @@ Vue.use(MuseUI)
 Vue.use(Toast)
 require('./lib/common_mixin')
 
+const errHandler = (err,vm,info) => {
+  console.log(err)
+}
+
 Vue.config.productionTip = false
+Vue.config.errorHandler = errHandler
 
 /* eslint-disable no-new */
 new Vue({
