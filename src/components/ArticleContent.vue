@@ -1,5 +1,5 @@
 <template>
-  <div class="content-main">
+  <div class="content-main" @click="$emit('click')">
     <h5 class="name" v-if="name" v-html="name"></h5>
     <div class="content" v-html="content"></div>
   </div>
@@ -11,13 +11,13 @@ export default {
   props: [
     'name',
     'content'
-  ],
+  ]
 }
 </script>
 
 <style scoped>
   .content-main{
-    margin: 5px;
+    padding: 5px;
     text-indent: 2px;
     font-size: 18px;
     line-height: 24px;

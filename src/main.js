@@ -13,7 +13,7 @@ Vue.use(MuseUI)
 Vue.use(Toast)
 require('./lib/common_mixin')
 
-const errHandler = (err,vm,info) => {
+const errHandler = (err, vm, info) => {
   console.log(err)
 }
 

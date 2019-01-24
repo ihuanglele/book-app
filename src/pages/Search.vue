@@ -36,10 +36,10 @@
 
 <script>
 
-  import Loading from '../components/Loading'
-  import BookImg from '../components/BookImg'
+import Loading from '../components/Loading'
+import BookImg from '../components/BookImg'
 
-  export default {
+export default {
   name: 'Search',
   components: {BookImg, Loading},
   data () {

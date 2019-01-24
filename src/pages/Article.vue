@@ -1,41 +1,49 @@
 <template>
-  <div class="app-content">
-    <mu-appbar class="topbar" color="primary">
+  <div>
+    <mu-appbar class="topbar" color="primary"
+               v-if="topbarActive" >
       <mu-button @click="back" icon slot="left">
         <mu-icon value="navigate_before"></mu-icon>
       </mu-button>
       {{book.name}}
-      <mu-button @click="search" icon slot="right">
-        <mu-icon value="search"></mu-icon>
+      <mu-button @click="showSettingDialog = true" icon slot="right">
+        <mu-icon value="menu"></mu-icon>
       </mu-button>
     </mu-appbar>
-    <mu-container>
-      <span>字体</span>
-      <mu-slider v-model="style.fontSize" :step="1" display-value :max="30" :min="12"></mu-slider>
-      <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
-      <span>行高</span>
-      <mu-slider v-model="style.lineHeight" :step="1" display-value :max="30" :min="style.fontSize"></mu-slider>
-      <mu-flex fill justify-content="between">
-        <mu-button v-for="item in styleOptions"
-                   small color="blue"
-                   v-html="item.name"
-                   style="min-width: 50px;line-height: 28px"
-                   @click="style = item.value"
-                   :key="item.name"></mu-button>
-      </mu-flex>
-      <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
-      <span>颜色</span>
-      <mu-flex fill justify-content="between">
-        <mu-button v-for="item in colorOptions"
-                   small :color="item.background"
-                   :text-color="item.color"
-                   v-html="'爱'"
-                   style="min-width: 40px;line-height: 28px"
-                   @click="color = item"
-                   :key="item.name"></mu-button>
-      </mu-flex>
-    </mu-container>
+
+    <mu-dialog title="设置" width="360"
+               scrollable :open.sync="showSettingDialog">
+      <mu-container>
+        <span>字体</span>
+        <mu-slider v-model="style.fontSize" :step="1" display-value :max="30" :min="12"></mu-slider>
+        <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
+        <span>行高</span>
+        <mu-slider v-model="style.lineHeight" :step="1" display-value :max="30" :min="style.fontSize"></mu-slider>
+        <mu-flex fill justify-content="between">
+          <mu-button v-for="item in styleOptions"
+                     small color="blue"
+                     v-html="item.name"
+                     style="min-width: 50px;line-height: 28px"
+                     @click="style = item.value"
+                     :key="item.name"></mu-button>
+        </mu-flex>
+        <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
+        <span>颜色</span>
+        <mu-flex fill justify-content="between">
+          <mu-button v-for="item in colorOptions"
+                     small :color="item.background"
+                     :text-color="item.color"
+                     v-html="'爱'"
+                     style="min-width: 40px;line-height: 28px"
+                     @click="color = item"
+                     :key="item.name"></mu-button>
+        </mu-flex>
+      </mu-container>
+      <mu-button slot="actions" flat color="primary" @click="showSettingDialog = false">关闭</mu-button>
+    </mu-dialog>
+
     <article-content
+      @click="showTopbar"
       v-for="(article,index) in articles" :key="index"
       class="article-content"
       :style="articleStyle"
@@ -45,14 +53,16 @@
 </template>
 
 <script>
-  import BookImg from '../components/BookImg'
-  import ArticleContent from '../components/ArticleContent'
+import BookImg from '../components/BookImg'
+import ArticleContent from '../components/ArticleContent'
 
-  export default {
+export default {
   name: 'Article',
   components: {ArticleContent, BookImg},
   data () {
     return {
+      showSettingDialog: false,
+      topbarActive: false,
       book: {
         name: '',
         author: '',
@@ -100,6 +110,10 @@
     _initFunc (to, from) {
       this.getArticle(to.params)
     },
+    showTopbar(){
+      console.log('ok')
+      this.topbarActive = !this.topbarActive
+    },
     async getArticle (params) {
       const ret = await this.http_get('index/article', params)
       if (ret.code !== 200) {
@@ -127,7 +141,6 @@
 <style scoped>
   .topbar{
     width: 100%;
-    display: none;
     position: absolute;
     top:0
   }
