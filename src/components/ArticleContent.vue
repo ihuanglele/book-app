@@ -1,7 +1,7 @@
 <template>
   <div class="content-main" @click="$emit('click')">
     <h5 class="name" v-if="name" v-html="name"></h5>
-    <div class="content" v-html="content"></div>
+    <div class="content" v-html="formatText(content)"></div>
   </div>
 </template>
 
@@ -11,7 +11,12 @@ export default {
   props: [
     'name',
     'content'
-  ]
+  ],
+  methods: {
+    formatText (text) {
+      return text.replace(/\r+/g, '<br/>')
+    }
+  }
 }
 </script>
 
