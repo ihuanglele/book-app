@@ -2,11 +2,11 @@
   <div class="app-content">
     <mu-appbar style="width: 100%;position: fixed;" color="primary">
       <mu-button @click="back" icon slot="left">
-        <mu-icon value="navigate_before"></mu-icon>
+        <icon icon="back" />
       </mu-button>
       {{book.name}}
       <mu-button @click="search" icon slot="right">
-        <mu-icon value="search"></mu-icon>
+        <icon icon="search" />
       </mu-button>
     </mu-appbar>
     <Loading style="margin-top: 80px;" v-if="!init"></Loading>
@@ -34,13 +34,13 @@
       <div class="card">
         <div class="sub-title">
           <h3>章节列表</h3>
-          <mu-icon class="left-icon" @click="sortAsc = !sortAsc" value="sort"></mu-icon>
+          <icon icon="sort" />
         </div>
         <mu-list>
           <mu-list-item button :ripple="false" @click="viewArticle(item.articleId)" v-for="(item,index) in chapters" :key="index">
             <mu-list-item-title v-html="item.title"></mu-list-item-title>
             <mu-list-item-action>
-              <mu-icon value="navigate_next"></mu-icon>
+              <icon icon="back" />
             </mu-list-item-action>
           </mu-list-item>
         </mu-list>
@@ -50,11 +50,12 @@
 </template>
 
 <script>
-import Loading from '../components/Loading'
+  import Loading from '../components/Loading'
+  import Icon from '../components/Icon'
 
-export default {
+  export default {
   name: 'Book',
-  components: {Loading},
+  components: {Icon, Loading},
   data () {
     return {
       init: false,

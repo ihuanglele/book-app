@@ -3,7 +3,7 @@
     <mu-appbar style="width: 100%;" color="primary">
       Search for You
       <mu-button @click="search" icon slot="right">
-        <mu-icon value="search"></mu-icon>
+        <icon icon="search" />
       </mu-button>
     </mu-appbar>
   </div>
@@ -11,8 +11,10 @@
 
 <script>
 
-export default {
-  components: {},
+  import Icon from '../components/Icon'
+
+  export default {
+  components: {Icon},
   data () {
     return {
       form: {

@@ -1,14 +1,18 @@
 <template>
   <div>
-    <mu-appbar class="topbar" color="primary"
-               v-if="topbarActive" >
+    <mu-appbar class="topbar" color="primary" :class="{active:topbarActive}">
       <mu-button @click="back" icon slot="left">
-        <mu-icon value="navigate_before"></mu-icon>
+        <icon icon="back"></icon>
       </mu-button>
       {{book.name}}
-      <mu-button @click="showSettingDialog = true" icon slot="right">
-        <mu-icon value="menu"></mu-icon>
-      </mu-button>
+      <div slot="right">
+        <mu-button @click="showChapterDialog = true" icon >
+          <icon icon="listcolumn"></icon>
+        </mu-button>
+        <mu-button @click="showSettingDialog = true" icon >
+          <icon icon="setting"></icon>
+        </mu-button>
+      </div>
     </mu-appbar>
 
     <mu-dialog title="设置" width="360"
@@ -53,15 +57,17 @@
 </template>
 
 <script>
-import BookImg from '../components/BookImg'
-import ArticleContent from '../components/ArticleContent'
+  import BookImg from '../components/BookImg'
+  import ArticleContent from '../components/ArticleContent'
+  import Icon from '../components/Icon'
 
-export default {
+  export default {
   name: 'Article',
-  components: {ArticleContent, BookImg},
+  components: {Icon, ArticleContent, BookImg},
   data () {
     return {
       showSettingDialog: false,
+      showChapterDialog: false,
       topbarActive: false,
       book: {
         name: '',
@@ -103,7 +109,6 @@ export default {
       this.back()
       return null
     }
-    console.log('create')
     this.getArticle(this.$route.params)
   },
   methods: {
@@ -111,7 +116,6 @@ export default {
       this.getArticle(to.params)
     },
     showTopbar () {
-      console.log('ok')
       this.topbarActive = !this.topbarActive
     },
     async getArticle (params) {
@@ -141,8 +145,12 @@ export default {
 <style scoped>
   .topbar{
     width: 100%;
-    position: absolute;
-    top:0
+    position: fixed;
+    top:-60px;
+    transition: top 300ms ease-in-out;
+  }
+  .topbar.active{
+    top:0;
   }
 .book{
   width: 120px;

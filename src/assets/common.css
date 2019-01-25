@@ -16,6 +16,9 @@ body,html{
   background-color: #fafafa;
   color: rgba(0, 0, 0, .87);
 }
+.iconfont {
+  font-size: 20px;
+}
 
 .mu-grid-tile-titlebar{
   background-color: rgba(0,0,0,.12);
