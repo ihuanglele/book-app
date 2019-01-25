@@ -73,10 +73,10 @@ export default {
         }
       }
     },
-    viewBook (type, id) {
+    viewBook (type, bookId) {
       this.$router.push({
         name: 'book',
-        params: {type, id}
+        params: {type, bookId}
       })
     }
   },

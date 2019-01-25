@@ -19,7 +19,6 @@ export default {
       if (this.color) {
         s['color'] = this.color
       }
-      console.log(s)
       return s
     }
   }

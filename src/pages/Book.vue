@@ -34,13 +34,15 @@
       <div class="card">
         <div class="sub-title">
           <h3>章节列表</h3>
-          <icon icon="sort" />
+          <icon class="right-icon" @click="sortAsc = !sortAsc" icon="sort" />
         </div>
         <mu-list>
-          <mu-list-item button :ripple="false" @click="viewArticle(item.articleId)" v-for="(item,index) in chapters" :key="index">
+          <mu-list-item button :ripple="false"
+                        v-for="(item,index) in chapters" :key="index"
+                        @click="viewArticle(item.articleId,index)">
             <mu-list-item-title v-html="item.title"></mu-list-item-title>
             <mu-list-item-action>
-              <icon icon="back" />
+              <icon icon="right" />
             </mu-list-item-action>
           </mu-list-item>
         </mu-list>
@@ -62,7 +64,7 @@ export default {
       sortAsc: true,
       link: {
         type: '',
-        id: ''
+        bookId: ''
       },
       book: {
         name: '',
@@ -86,19 +88,23 @@ export default {
       this.book = ret.data
       this.init = true
     },
-    viewArticle (articleId) {
+    viewArticle (articleId, index) {
+      if (!this.sortAsc) {
+        index = this.chapters.length - index - 1
+      }
       this.$router.push({
         name: 'article',
         params: {
           type: this.book.type,
           bookId: this.book.bookId,
-          articleId
+          articleId,
+          index
         }
       })
     }
   },
   created () {
-    if (!this.$route.params.type || !this.$route.params.id) {
+    if (!this.$route.params.type || !this.$route.params.bookId) {
       this.$toast.error('参数错误')
       this.back()
       return null
@@ -137,7 +143,7 @@ export default {
     display: inline-block;
     content: "》";
   }
-  .sub-title .left-icon{
+  .sub-title .right-icon{
     float: right;
   }
 .info{

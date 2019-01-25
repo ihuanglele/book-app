@@ -1,19 +1,35 @@
 <template>
-  <div>
+  <div @click="clickPage">
     <mu-appbar class="topbar" color="primary" :class="{active:topbarActive}">
       <mu-button @click="back" icon slot="left">
         <icon icon="back"></icon>
       </mu-button>
       {{book.name}}
       <div slot="right">
-        <mu-button @click="showChapterDialog = true" icon >
+        <mu-button small @click.stop="showChaptersDrawer = true" icon >
           <icon icon="listcolumn"></icon>
         </mu-button>
-        <mu-button @click="showSettingDialog = true" icon >
+        <mu-button small @click.stop="showSettingDialog = true" icon >
           <icon icon="setting"></icon>
+        </mu-button>
+        <mu-button small @click.stop="goIndex" icon >
+          <icon icon="home"></icon>
         </mu-button>
       </div>
     </mu-appbar>
+
+    <mu-container>
+      <mu-load-more @load="loadMore" :loading="loading" :loaded-all="loadedAll">
+        <mu-list>
+          <article-content
+            v-for="(item,index) in articles" :key="index"
+            class="article-content"
+            :style="articleStyle"
+            :name="item.title"
+            :content="item.content" />
+        </mu-list>
+      </mu-load-more>
+    </mu-container>
 
     <mu-dialog title="设置" width="360"
                scrollable :open.sync="showSettingDialog">
@@ -46,13 +62,15 @@
       <mu-button slot="actions" flat color="primary" @click="showSettingDialog = false">关闭</mu-button>
     </mu-dialog>
 
-    <article-content
-      @click="showTopbar"
-      v-for="(article,index) in articles" :key="index"
-      class="article-content"
-      :style="articleStyle"
-      :name="`第${index}章`"
-      :content="article"/>
+    <mu-drawer :open.sync="showChaptersDrawer" :docked="false" width="200px" :right="true">
+      <mu-list>
+        <mu-list-item button :ripple="false"
+                      v-for="(item,index) in chapters" :key="index"
+                      @click="jumpChapter(index)">
+          <p class="chapter-list-title" v-html="item.title"></p>
+        </mu-list-item>
+      </mu-list>
+    </mu-drawer>
   </div>
 </template>
 
@@ -67,8 +85,10 @@ export default {
   data () {
     return {
       showSettingDialog: false,
-      showChapterDialog: false,
       topbarActive: false,
+      loading: false,
+      loadedAll: false,
+      showChaptersDrawer: false,
       book: {
         name: '',
         author: '',
@@ -77,23 +97,17 @@ export default {
         bookId: '',
         chapters: []
       },
-      currentChapter: 0,
-      articles: [
-      ],
-      params: {
-      },
-      style: {
-        lineHeight: 20,
-        fontSize: 18
-      },
+      currentChapterIndex: 0,
+      lastChapterIndex: 0,
+      articles: [], // {title,content,index}
+      style: {lineHeight: 20, fontSize: 18},
       styleOptions: [
         {'name': '小号', value: {lineHeight: 14, fontSize: 12}},
         {'name': '正常', value: {lineHeight: 18, fontSize: 16}},
         {'name': '舒服', value: {lineHeight: 22, fontSize: 18}},
         {'name': '超大', value: {lineHeight: 30, fontSize: 24}}
       ],
-      color: {
-      },
+      color: {}, // {color,background}
       colorOptions: [
         {color: '#000', background: '#fff'},
         {color: '#333', background: '#f3f7f0'},
@@ -104,29 +118,98 @@ export default {
     }
   },
   created () {
-    if (!this.$route.params.type || !this.$route.params.bookId || !this.$route.params.articleId) {
-      this.$toast.error('参数错误')
-      this.back()
-      return null
-    }
-    this.getArticle(this.$route.params)
+    this._initFunc(this.$route)
   },
   methods: {
-    _initFunc (to, from) {
+    async _initFunc (to, from) {
+      console.log('_initFunc')
+      if (!to.params.type || !to.params.bookId || !to.params.articleId) {
+        this.$toast.error('参数错误')
+        this.back()
+        return
+      }
+      if (typeof to.params.index !== 'undefined') {
+        this.currentChapterIndex = to.params.index
+      }
+      await this.initCat()
       this.getArticle(to.params)
     },
-    showTopbar () {
-      this.topbarActive = !this.topbarActive
+    clickPage () {
+      if (this.showChaptersDrawer) {
+        this.showChaptersDrawer = false
+      } else {
+        this.topbarActive = !this.topbarActive
+      }
+    },
+    sortArticle (arr) {
+      return arr.sort((a, b) => {
+        return a.index - b.index
+      })
     },
     async getArticle (params) {
+      console.log('getArticle', params)
       const ret = await this.http_get('index/article', params)
       if (ret.code !== 200) {
         return null
       }
-      this.articles.push(ret.data)
+      let item = {}
+      let exist = false
+      // 查询 章节名称
+      for (let i in this.chapters) {
+        if (this.chapters[i].articleId === params.articleId) {
+          item = {...this.chapters[i]}
+          item['index'] = i
+          item['content'] = ret.data
+          exist = true
+          break
+        }
+      }
+      // 没有匹配到内容
+      if (!exist) {
+        item['index'] = -1
+        item['content'] = ret.data
+        console.log('没有找到')
+      }
+      let arr = [
+        ...this.articles,
+        item
+      ]
+      arr = this.sortArticle(arr)
+      this.articles = arr
+      this.lastChapterIndex = arr[arr.length - 1]['index']
+      if (this.lastChapterIndex === (this.chapters.length - 1)) {
+        this.loadedAll = true
+      }
     },
-    clickImg () {
-      console.log('clickImg')
+    async initCat () {
+      // 判断书是否变化
+      if (this.$route.params.type === this.book.type &&
+          this.$route.params.bookId === this.book.bookId) {
+        return
+      }
+      const ret = await this.http_get('index/cat', {
+        type: this.$route.params.type,
+        bookId: this.$route.params.bookId
+      })
+      if (ret.code === 200) {
+        this.book = ret.data
+        this.articles = []
+      }
+    },
+    async loadMore () {
+      this.loading = true
+      // 获取下一篇
+      let i = 1 + (Number)(this.lastChapterIndex)
+      try {
+        console.log(this.chapters[i])
+        await this.getArticle(this.chapters[i])
+      } catch (err) {
+
+      }
+      this.loading = false
+    },
+    jumpChapter (index) {
+      console.log(index)
     }
   },
   computed: {
@@ -137,6 +220,9 @@ export default {
         fontSize: this.style.fontSize + 'px',
         ...this.color
       }
+    },
+    chapters () {
+      return this.book.chapters
     }
   }
 }
@@ -156,4 +242,7 @@ export default {
   width: 120px;
   max-height: 200px;
 }
+  .chapter-list-title{
+    overflow: hidden
+  }
 </style>

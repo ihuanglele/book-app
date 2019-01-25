@@ -20,12 +20,12 @@ export default new Router({
       component: Search
     },
     {
-      path: '/book/:type/:id',
+      path: '/book/:type/:bookId',
       name: 'book',
       component: Book
     },
     {
-      path: '/article/:type/:bookId/:articleId',
+      path: '/article/:type/:bookId/:articleId/:index?',
       name: 'article',
       component: Article
     }

@@ -28,6 +28,12 @@ Vue.mixin({
       this.$router.back()
     },
 
+    goIndex () {
+      this.$router.push({
+        path: '/'
+      })
+    },
+
     /**
      * get 请求
      * @param path uri
