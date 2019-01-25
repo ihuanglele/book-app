@@ -50,10 +50,10 @@
 </template>
 
 <script>
-  import Loading from '../components/Loading'
-  import Icon from '../components/Icon'
+import Loading from '../components/Loading'
+import Icon from '../components/Icon'
 
-  export default {
+export default {
   name: 'Book',
   components: {Icon, Loading},
   data () {

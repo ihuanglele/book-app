@@ -57,11 +57,11 @@
 </template>
 
 <script>
-  import BookImg from '../components/BookImg'
-  import ArticleContent from '../components/ArticleContent'
-  import Icon from '../components/Icon'
+import BookImg from '../components/BookImg'
+import ArticleContent from '../components/ArticleContent'
+import Icon from '../components/Icon'
 
-  export default {
+export default {
   name: 'Article',
   components: {Icon, ArticleContent, BookImg},
   data () {
