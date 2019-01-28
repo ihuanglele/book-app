@@ -18,9 +18,9 @@
       </div>
     </mu-appbar>
 
-    <mu-container>
+    <mu-container style="padding: 0">
       <mu-load-more @load="loadMore" :loading="loading" :loaded-all="loadedAll">
-        <mu-list>
+        <mu-list style="padding: 0;">
           <article-content
             v-for="(item,index) in articles" :key="index"
             class="article-content"
@@ -31,14 +31,14 @@
       </mu-load-more>
     </mu-container>
 
-    <mu-dialog title="设置" width="360"
+    <mu-dialog title="设置" width="80%"
                scrollable :open.sync="showSettingDialog">
       <mu-container>
-        <span>字体</span>
+        <span>字号</span>
         <mu-slider v-model="style.fontSize" :step="1" display-value :max="30" :min="12"></mu-slider>
         <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
         <span>行高</span>
-        <mu-slider v-model="style.lineHeight" :step="1" display-value :max="30" :min="style.fontSize"></mu-slider>
+        <mu-slider v-model="style.lineHeight" :step="1" display-value :max="80" :min="(style.fontSize) * 1.3"></mu-slider>
         <mu-flex fill justify-content="between">
           <mu-button v-for="item in styleOptions"
                      small color="blue"
@@ -49,12 +49,13 @@
         </mu-flex>
         <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
         <span>颜色</span>
-        <mu-flex fill justify-content="between">
+        <mu-flex fill justify-content="start" wrap="nowrap" style="overflow-x: auto;padding-bottom: 5px">
           <mu-button v-for="item in colorOptions"
                      small :color="item.background"
                      :text-color="item.color"
                      v-html="'爱'"
-                     style="min-width: 40px;line-height: 28px"
+                     fab
+                     style="min-width: 40px;line-height: 28px;margin: 3px 8px 0"
                      @click="color = item"
                      :key="item.name"></mu-button>
         </mu-flex>
@@ -99,7 +100,7 @@ export default {
       },
       currentChapterIndex: 0,
       articles: [], // {title,content,index}
-      style: {lineHeight: 20, fontSize: 18},
+      style: {lineHeight: 30, fontSize: 18},
       styleOptions: [
         {'name': '小号', value: {lineHeight: 14, fontSize: 12}},
         {'name': '正常', value: {lineHeight: 18, fontSize: 16}},
@@ -111,12 +112,14 @@ export default {
         {color: '#000', background: '#fff'},
         {color: '#333', background: '#f3f7f0'},
         {color: '#2f2f2f', background: '#f7f7f7'},
+        {color: '#333', background: '#fdf6ee'},
         {color: '#fefeff', background: '#c1bdd1'},
-        {color: '#000', background: '#fff'}
+        {color: '#000', background: '#c7edff'}
       ]
     }
   },
   created () {
+    this.initConf()
     this._initFunc(this.$route)
   },
   methods: {
@@ -214,6 +217,24 @@ export default {
     },
     jumpChapter (index) {
       this.getArticle(this.chapters[index])
+    },
+    initConf () {
+      let style = this.getConf('article_style', false)
+      if (style) {
+        try {
+          this.style = JSON.parse(style)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      let color = this.getConf('article_color', false)
+      if (color) {
+        try {
+          this.color = JSON.parse(color)
+        } catch (e) {
+
+        }
+      }
     }
   },
   computed: {
@@ -227,6 +248,14 @@ export default {
     },
     chapters () {
       return this.book.chapters
+    }
+  },
+  watch: {
+    style (v) {
+      this.setConf('article_style', JSON.stringify(v))
+    },
+    color (v) {
+      this.setConf('article_color', JSON.stringify(v))
     }
   }
 }
@@ -245,6 +274,9 @@ export default {
 .book{
   width: 120px;
   max-height: 200px;
+}
+.article-content{
+  font-family: "Microsoft YaHei";
 }
   .chapter-list-title{
     overflow: hidden
