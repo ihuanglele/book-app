@@ -1,7 +1,7 @@
 <template>
   <div @click="clickPage">
     <mu-appbar class="topbar" color="primary" :class="{active:topbarActive}">
-      <mu-button @click="back" icon slot="left">
+      <mu-button @click="goBack" icon slot="left">
         <icon icon="back"></icon>
       </mu-button>
       {{book.name}}
@@ -67,7 +67,7 @@
         <mu-list-item button :ripple="false"
                       v-for="(item,index) in chapters" :key="index"
                       @click="jumpChapter(index)">
-          <p class="chapter-list-title" v-html="item.title"></p>
+          <p class="chapter-list-title" :class="{active:currentChapterIndex === index}" v-html="item.title"></p>
         </mu-list-item>
       </mu-list>
     </mu-drawer>
@@ -98,7 +98,6 @@ export default {
         chapters: []
       },
       currentChapterIndex: 0,
-      lastChapterIndex: 0,
       articles: [], // {title,content,index}
       style: {lineHeight: 20, fontSize: 18},
       styleOptions: [
@@ -125,7 +124,7 @@ export default {
       console.log('_initFunc')
       if (!to.params.type || !to.params.bookId || !to.params.articleId) {
         this.$toast.error('参数错误')
-        this.back()
+        this.goBack()
         return
       }
       if (typeof to.params.index !== 'undefined') {
@@ -147,7 +146,6 @@ export default {
       })
     },
     async getArticle (params) {
-      console.log('getArticle', params)
       const ret = await this.http_get('index/article', params)
       if (ret.code !== 200) {
         return null
@@ -175,9 +173,16 @@ export default {
         item
       ]
       arr = this.sortArticle(arr)
-      this.articles = arr
-      this.lastChapterIndex = arr[arr.length - 1]['index']
-      if (this.lastChapterIndex === (this.chapters.length - 1)) {
+      let articles = []
+      for (let i in arr) {
+        articles.push(arr[i])
+        if (arr[i]['articleId'] === params['articleId']) {
+          break
+        }
+      }
+      this.articles = articles
+      this.currentChapterIndex = articles[articles.length - 1]['index']
+      if (this.currentChapterIndex === (this.chapters.length - 1)) {
         this.loadedAll = true
       }
     },
@@ -199,9 +204,8 @@ export default {
     async loadMore () {
       this.loading = true
       // 获取下一篇
-      let i = 1 + (Number)(this.lastChapterIndex)
+      let i = 1 + (Number)(this.currentChapterIndex)
       try {
-        console.log(this.chapters[i])
         await this.getArticle(this.chapters[i])
       } catch (err) {
 
@@ -209,7 +213,7 @@ export default {
       this.loading = false
     },
     jumpChapter (index) {
-      console.log(index)
+      this.getArticle(this.chapters[index])
     }
   },
   computed: {

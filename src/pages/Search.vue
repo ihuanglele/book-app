@@ -1,7 +1,7 @@
 <template>
   <div class="app-content">
     <div class="search-container">
-      <mu-form class="form" :class="{active:searchFocus}" :model="form">
+      <mu-form class="form" @keyup.enter.native="search" :class="{active:searchFocus}" :model="form">
         <mu-text-field class="search-input"
                        placeholder="搜索"
                        :actionClick="search"
@@ -67,9 +67,9 @@ export default {
         }
         this.isSearching = true
         const ret = await this.http_get('index/search', this.searchParams)
+        this.isSearching = false
         if (ret.code === 200) {
           this.dataList = ret.data
-          this.isSearching = false
         }
       }
     },
@@ -83,7 +83,8 @@ export default {
   watch: {
     searchFocus (v) {
       if (v === false) {
-        this.search()
+        // this.search()
+        this.setTitle(this.form.input)
       }
     }
   }

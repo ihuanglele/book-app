@@ -24,7 +24,7 @@ Vue.mixin({
     /**
      * 返回上一页
      */
-    back () {
+    goBack () {
       this.$router.back()
     },
 
@@ -32,6 +32,10 @@ Vue.mixin({
       this.$router.push({
         path: '/'
       })
+    },
+
+    setTitle (title) {
+      document.title = title
     },
 
     /**
