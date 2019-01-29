@@ -83,7 +83,7 @@ export default {
     searchFocus (v) {
       if (v === false) {
         this.search()
-        this.setTitle('搜索' + this.form.input)
+        this.setTitle('搜索 - ' + this.form.input)
       }
     }
   }
