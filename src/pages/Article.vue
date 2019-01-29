@@ -18,7 +18,7 @@
       </div>
     </mu-appbar>
 
-    <mu-container>
+    <mu-container style="padding: 0">
       <mu-load-more @load="loadMore" :loading="loading" :loaded-all="loadedAll">
         <mu-list>
           <article-content
