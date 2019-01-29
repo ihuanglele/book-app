@@ -1,7 +1,7 @@
 <template>
   <div class="app-content">
     <mu-appbar style="width: 100%;position: fixed;" color="primary">
-      <mu-button @click="back" icon slot="left">
+      <mu-button @click="goBack" icon slot="left">
         <icon icon="back" />
       </mu-button>
       {{book.name}}
@@ -78,7 +78,13 @@ export default {
   },
   methods: {
     _initFunc (to) {
-      console.log(to)
+      if (!this.$route.params.type || !this.$route.params.bookId) {
+        this.$toast.error('参数错误')
+        this.goBack()
+        return null
+      }
+      this.link = this.$route.params
+      this.getCat()
     },
     async getCat () {
       const ret = await this.http_get('index/cat', this.link)
@@ -104,13 +110,7 @@ export default {
     }
   },
   created () {
-    if (!this.$route.params.type || !this.$route.params.bookId) {
-      this.$toast.error('参数错误')
-      this.back()
-      return null
-    }
-    this.link = this.$route.params
-    this.getCat()
+    this._initFunc()
   },
   computed: {
     chapters () {

@@ -23,9 +23,33 @@ Vue.mixin({
     },
 
     /**
+     * 获取本地配置
+     * @param key string 键
+     * @param def 默认值
+     * @returns {string}
+     */
+    getConf (key, def = '') {
+      const r = window.localStorage.getItem(key)
+      if (r) {
+        return r
+      } else {
+        return def
+      }
+    },
+
+    /**
+     * 设置本地存储
+     * @param key
+     * @param value
+     */
+    setConf (key, value) {
+      window.localStorage.setItem(key, value)
+    },
+
+    /**
      * 返回上一页
      */
-    back () {
+    goBack () {
       this.$router.back()
     },
 
@@ -33,6 +57,10 @@ Vue.mixin({
       this.$router.push({
         path: '/'
       })
+    },
+
+    setTitle (title) {
+      document.title = title
     },
 
     /**
@@ -112,8 +140,10 @@ Vue.mixin({
           this.$toast.error('Http 状态码错误')
         }
       } catch (E) {
-        console.log(E)
-        this.$toast.error('网络错误')
+        this.$toast.error({
+          message: JSON.stringify(E),
+          time: 100000000
+        })
       }
     }
   },

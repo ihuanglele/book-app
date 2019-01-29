@@ -1,7 +1,7 @@
 <template>
   <div @click="clickPage">
     <mu-appbar class="topbar" color="primary" :class="{active:topbarActive}">
-      <mu-button @click="back" icon slot="left">
+      <mu-button @click="goBack" icon slot="left">
         <icon icon="back"></icon>
       </mu-button>
       {{book.name}}
@@ -20,7 +20,7 @@
 
     <mu-container style="padding: 0">
       <mu-load-more @load="loadMore" :loading="loading" :loaded-all="loadedAll">
-        <mu-list>
+        <mu-list style="padding: 0;">
           <article-content
             v-for="(item,index) in articles" :key="index"
             class="article-content"
@@ -31,14 +31,14 @@
       </mu-load-more>
     </mu-container>
 
-    <mu-dialog title="设置" width="360"
+    <mu-dialog title="设置" width="80%"
                scrollable :open.sync="showSettingDialog">
       <mu-container>
-        <span>字体</span>
+        <span>字号</span>
         <mu-slider v-model="style.fontSize" :step="1" display-value :max="30" :min="12"></mu-slider>
         <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
         <span>行高</span>
-        <mu-slider v-model="style.lineHeight" :step="1" display-value :max="30" :min="style.fontSize"></mu-slider>
+        <mu-slider v-model="style.lineHeight" :step="1" display-value :max="80" :min="(style.fontSize) * 1.3"></mu-slider>
         <mu-flex fill justify-content="between">
           <mu-button v-for="item in styleOptions"
                      small color="blue"
@@ -49,12 +49,13 @@
         </mu-flex>
         <div style="margin: 10px 0;border-bottom: 1px dotted #0097fa"></div>
         <span>颜色</span>
-        <mu-flex fill justify-content="between">
+        <mu-flex fill justify-content="start" wrap="nowrap" style="overflow-x: auto;padding-bottom: 5px">
           <mu-button v-for="item in colorOptions"
                      small :color="item.background"
                      :text-color="item.color"
                      v-html="'爱'"
-                     style="min-width: 40px;line-height: 28px"
+                     fab
+                     style="min-width: 40px;line-height: 28px;margin: 3px 8px 0"
                      @click="color = item"
                      :key="item.name"></mu-button>
         </mu-flex>
@@ -67,7 +68,7 @@
         <mu-list-item button :ripple="false"
                       v-for="(item,index) in chapters" :key="index"
                       @click="jumpChapter(index)">
-          <p class="chapter-list-title" v-html="item.title"></p>
+          <p class="chapter-list-title" :class="{active:currentChapterIndex === index}" v-html="item.title"></p>
         </mu-list-item>
       </mu-list>
     </mu-drawer>
@@ -98,9 +99,8 @@ export default {
         chapters: []
       },
       currentChapterIndex: 0,
-      lastChapterIndex: 0,
       articles: [], // {title,content,index}
-      style: {lineHeight: 20, fontSize: 18},
+      style: {lineHeight: 30, fontSize: 18},
       styleOptions: [
         {'name': '小号', value: {lineHeight: 14, fontSize: 12}},
         {'name': '正常', value: {lineHeight: 18, fontSize: 16}},
@@ -112,12 +112,14 @@ export default {
         {color: '#000', background: '#fff'},
         {color: '#333', background: '#f3f7f0'},
         {color: '#2f2f2f', background: '#f7f7f7'},
+        {color: '#333', background: '#fdf6ee'},
         {color: '#fefeff', background: '#c1bdd1'},
-        {color: '#000', background: '#fff'}
+        {color: '#000', background: '#c7edff'}
       ]
     }
   },
   created () {
+    this.initConf()
     this._initFunc(this.$route)
   },
   methods: {
@@ -125,7 +127,7 @@ export default {
       console.log('_initFunc')
       if (!to.params.type || !to.params.bookId || !to.params.articleId) {
         this.$toast.error('参数错误')
-        this.back()
+        this.goBack()
         return
       }
       if (typeof to.params.index !== 'undefined') {
@@ -147,7 +149,6 @@ export default {
       })
     },
     async getArticle (params) {
-      console.log('getArticle', params)
       const ret = await this.http_get('index/article', params)
       if (ret.code !== 200) {
         return null
@@ -175,9 +176,16 @@ export default {
         item
       ]
       arr = this.sortArticle(arr)
-      this.articles = arr
-      this.lastChapterIndex = arr[arr.length - 1]['index']
-      if (this.lastChapterIndex === (this.chapters.length - 1)) {
+      let articles = []
+      for (let i in arr) {
+        articles.push(arr[i])
+        if (arr[i]['articleId'] === params['articleId']) {
+          break
+        }
+      }
+      this.articles = articles
+      this.currentChapterIndex = articles[articles.length - 1]['index']
+      if (this.currentChapterIndex === (this.chapters.length - 1)) {
         this.loadedAll = true
       }
     },
@@ -199,9 +207,8 @@ export default {
     async loadMore () {
       this.loading = true
       // 获取下一篇
-      let i = 1 + (Number)(this.lastChapterIndex)
+      let i = 1 + (Number)(this.currentChapterIndex)
       try {
-        console.log(this.chapters[i])
         await this.getArticle(this.chapters[i])
       } catch (err) {
 
@@ -209,7 +216,25 @@ export default {
       this.loading = false
     },
     jumpChapter (index) {
-      console.log(index)
+      this.getArticle(this.chapters[index])
+    },
+    initConf () {
+      let style = this.getConf('article_style', false)
+      if (style) {
+        try {
+          this.style = JSON.parse(style)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      let color = this.getConf('article_color', false)
+      if (color) {
+        try {
+          this.color = JSON.parse(color)
+        } catch (e) {
+
+        }
+      }
     }
   },
   computed: {
@@ -223,6 +248,14 @@ export default {
     },
     chapters () {
       return this.book.chapters
+    }
+  },
+  watch: {
+    style (v) {
+      this.setConf('article_style', JSON.stringify(v))
+    },
+    color (v) {
+      this.setConf('article_color', JSON.stringify(v))
     }
   }
 }
@@ -241,6 +274,9 @@ export default {
 .book{
   width: 120px;
   max-height: 200px;
+}
+.article-content{
+  font-family: "Microsoft YaHei";
 }
   .chapter-list-title{
     overflow: hidden
