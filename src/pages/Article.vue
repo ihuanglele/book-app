@@ -207,6 +207,7 @@ export default {
       })
       if (ret.code === 200) {
         this.book = ret.data
+        this.setTitle(ret.data.name)
         this.articles = []
       }
     },

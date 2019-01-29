@@ -96,6 +96,7 @@ export default {
       }
       this.book = ret.data
       this.init = true
+      this.setTitle(ret.data.name)
     },
     viewArticle (articleId, index) {
       if (!this.sortAsc) {

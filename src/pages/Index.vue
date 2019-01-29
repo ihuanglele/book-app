@@ -1,7 +1,7 @@
 <template>
   <div class="app-content">
     <mu-appbar style="width: 100%;" color="primary">
-      Search for You
+      来了官人
       <mu-button @click="search" icon slot="right">
         <icon icon="search" />
       </mu-button>
