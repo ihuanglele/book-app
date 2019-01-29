@@ -78,10 +78,13 @@ export default {
   },
   methods: {
     _initFunc (to) {
+      if (this.$route.name !== 'book') {
+        return
+      }
       if (!this.$route.params.type || !this.$route.params.bookId) {
         this.$toast.error('参数错误')
         this.goBack()
-        return null
+        return
       }
       this.link = this.$route.params
       this.getCat()
@@ -110,7 +113,7 @@ export default {
     }
   },
   created () {
-    this._initFunc()
+    this._initFunc(this.$route)
   },
   computed: {
     chapters () {

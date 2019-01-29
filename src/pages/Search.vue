@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     async search () {
-      console.log('search')
       const k = this.form.input
       if (k && k !== this.searchParams.key) {
         this.searchParams = {
@@ -83,7 +82,7 @@ export default {
   watch: {
     searchFocus (v) {
       if (v === false) {
-        // this.search()
+        this.search()
         this.setTitle(this.form.input)
       }
     }

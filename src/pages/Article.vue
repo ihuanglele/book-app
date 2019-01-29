@@ -120,11 +120,14 @@ export default {
   },
   created () {
     this.initConf()
-    this._initFunc(this.$route)
+    this._initFunc(this.$route, 'created')
   },
   methods: {
     async _initFunc (to, from) {
-      console.log('_initFunc')
+      if (to.name !== 'article') {
+        return
+      }
+      console.log('_initFunc', from)
       if (!to.params.type || !to.params.bookId || !to.params.articleId) {
         this.$toast.error('参数错误')
         this.goBack()
