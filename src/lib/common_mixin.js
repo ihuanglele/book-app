@@ -95,55 +95,50 @@ Vue.mixin({
     async http_http (config, cb) {
       config.baseURL = baseURL
       config.responseType = 'json'
-      config.headers = {
-        'Accept': 'application/json'
-      }
+      // config.headers = {
+      //   'Accept': 'application/json'
+      // }
 
-      try {
-        const response = await axios(config)
+      const response = await axios(config)
 
-        if (response.status === 200) {
-          let ret = response.data
-          // 判断是否有 code
-          if (typeof ret.code !== 'undefined') {
-            switch (ret.code) {
-              case 200: {
-                if (typeof cb === 'function') {
-                  cb(response.data)
-                } else {
-                  // 返回promise
-                  return new Promise((resolve, reject) => {
-                    resolve(response.data)
-                  })
-                }
-                break
+      if (response.status === 200) {
+        let ret = response.data
+        if (typeof ret !== 'object') {
+          throw Error(ret)
+        }
+        // 判断是否有 code
+        if (typeof ret.code !== 'undefined') {
+          switch (ret.code) {
+            case 200: {
+              if (typeof cb === 'function') {
+                cb(response.data)
+              } else {
+                // 返回promise
+                return new Promise((resolve, reject) => {
+                  resolve(response.data)
+                })
               }
-              default: {
-                if (typeof ret.msg !== 'undefined') {
-                  this.$toast.error(ret.msg)
-                }
-              }
+              break
             }
-          } else {
-            // 没有状态码 直接处理回调函数
-            if (typeof cb === 'function') {
-              cb(response.data)
-            } else {
-              // 返回promise
-              return new Promise((resolve, reject) => {
-                console.log(response.data)
-                resolve(response.data)
-              })
+            default: {
+              if (typeof ret.msg !== 'undefined') {
+                this.$toast.error(ret.msg)
+              }
             }
           }
         } else {
-          this.$toast.error('Http 状态码错误')
+          // 没有状态码 直接处理回调函数
+          if (typeof cb === 'function') {
+            cb(response.data)
+          } else {
+            // 返回promise
+            return new Promise((resolve, reject) => {
+              resolve(response.data)
+            })
+          }
         }
-      } catch (E) {
-        this.$toast.error({
-          message: JSON.stringify(E),
-          time: 100000000
-        })
+      } else {
+        throw Error('网络错误')
       }
     }
   },
