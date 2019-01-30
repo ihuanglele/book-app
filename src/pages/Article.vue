@@ -152,7 +152,7 @@ export default {
       })
     },
     async getArticle (params) {
-      if (!params.type || !params.bookId || !params.articleId){
+      if (!params.type || !params.bookId || !params.articleId) {
         return
       }
       const ret = await this.http_get('index/article', params)
