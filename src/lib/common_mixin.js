@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 
-const baseURL = 'http://books.awesometool.cn'
+const baseURL = 'https://books.awesometool.cn'
 // const baseURL = 'http://book.me'
 
 const img = require('@/assets/book.png')
