@@ -5,14 +5,14 @@
         <mu-text-field class="search-input"
                        placeholder="搜索"
                        :actionClick="search"
-                       action-icon=":search"
+                       action-icon=":icon-search iconfont"
                        @focus="searchFocus=true"
                        @blur="searchFocus=false"
                        v-model="form.input"></mu-text-field>
       </mu-form>
     </div>
     <div class="main">
-      <Loading v-show="isSearching"></Loading>
+      <Loading v-show="isSearching && true"></Loading>
       <div v-show="!isSearching">
         <mu-grid-list :cell-height="240">
           <mu-grid-tile @click="viewBook(item.type,item.bookId)" class="book-item" v-for="(item, index) in dataList" :key="index">

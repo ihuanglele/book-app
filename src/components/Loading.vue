@@ -1,35 +1,54 @@
 <template>
-  <div class="box">
-    <mu-icon size="36" :value="loadingIcon" color="green"></mu-icon>
+  <div class="loading">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Loading',
-  data () {
-    return {
-      loadingIcon: 'border_bottom'
-    }
-  },
-  created () {
-    let t = 0
-    const arr = ['border_bottom', 'border_left', 'border_top', 'border_right', 'border_inner', 'border_outer']
-    setInterval(() => {
-      t++
-      if (t === arr.length) {
-        t = 0
-      }
-      this.loadingIcon = arr[t]
-    }, 1000)
-  }
+  name: 'Loading'
 }
 </script>
 
 <style scoped>
-.box{
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
+.loading{
+  width: 80px;
+  height: 40px;
+  margin: 100px auto;
+}
+.loading span{
+  display: inline-block;
+  width: 8px;
+  height: 100%;
+  border-radius: 4px;
+  background: lightgreen;
+  -webkit-animation: load 1s ease infinite;
+}
+@-webkit-keyframes load{
+  0%,100%{
+    height: 40px;
+    background: lightgreen;
+  }
+  50%{
+    height: 70px;
+    margin: -15px 0;
+    background: lightblue;
+  }
+}
+.loading span:nth-child(2){
+  -webkit-animation-delay:0.2s;
+}
+.loading span:nth-child(3){
+  -webkit-animation-delay:0.4s;
+}
+.loading span:nth-child(4){
+  -webkit-animation-delay:0.6s;
+}
+.loading span:nth-child(5){
+  -webkit-animation-delay:0.8s;
 }
 </style>
