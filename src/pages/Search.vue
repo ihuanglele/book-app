@@ -5,7 +5,7 @@
         <mu-text-field class="search-input"
                        placeholder="搜索"
                        :actionClick="search"
-                       action-icon="search"
+                       action-icon=":search"
                        @focus="searchFocus=true"
                        @blur="searchFocus=false"
                        v-model="form.input"></mu-text-field>
