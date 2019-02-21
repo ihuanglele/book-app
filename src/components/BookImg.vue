@@ -3,7 +3,6 @@ export default {
   name: 'BookImg',
   data () {
     return {
-      src: '',
       isImg: true
     }
   },
@@ -15,7 +14,7 @@ export default {
     'height'
   ],
   render (createElement) {
-    if (this.author || this.bookName) {
+    if (!this.img) {
       this.isImg = false
     }
     let conf = {
@@ -30,7 +29,7 @@ export default {
       }
     }
     if (this.isImg) {
-      let src = this.src
+      let src = this.img
       if (!src) {
         src = this.getDefaultImg()
       }
